@@ -45,9 +45,11 @@ bool MultiTouchLayer::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent) {
     }
 
     if (MyEditorUI* editorUI = static_cast<MyEditorUI*>(EditorUI::get())) {
-        auto fields = editorUI->m_fields.self();
-        fields->m_rotateDragging = true;
-        fields->m_lastPos = pTouch->getLocation();
+        if (m_firstTouch != pTouch) {
+            auto fields = editorUI->m_fields.self();
+            fields->m_rotateDragging = true;
+            fields->m_lastPos = pTouch->getLocation();
+        }
     }
 
     return true;
@@ -61,12 +63,12 @@ void MultiTouchLayer::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent) {
         return;
     }
 
+    if (pTouch == m_firstTouch) {
+        return;
+    }
+
     if (MyEditorUI* editorUI = static_cast<MyEditorUI*>(EditorUI::get())) {
         auto fields = editorUI->m_fields.self();
-        if (pTouch == m_firstTouch) {
-            fields->m_lastPos = pTouch->getLocation();
-            return;
-        }
         if (fields->m_rotateDragging) {
 
             auto currentPos = pTouch->getLocation();
