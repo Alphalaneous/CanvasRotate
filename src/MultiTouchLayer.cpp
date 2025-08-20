@@ -48,6 +48,7 @@ bool MultiTouchLayer::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent) {
     if (MyEditorUI* editorUI = static_cast<MyEditorUI*>(EditorUI::get())) {
         if (m_firstTouch != pTouch) {
             auto fields = editorUI->m_fields.self();
+            fields->m_rotateDragging = true;
             fields->m_lastPos = pTouch->getLocation();
         }
     }
