@@ -141,9 +141,7 @@ void MyEditorUI::clickOnPosition(cocos2d::CCPoint p0) {
 bool MyEditorUI::ccTouchBegan(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
     auto fields = m_fields.self();
     CCPoint preTransform = touch->getLocation();
-    if ((m_swipeEnabled || CCKeyboardDispatcher::get()->getShiftKeyPressed()) && m_selectedMode == 3) {
-        return EditorUI::ccTouchBegan(touch, p1);
-    }
+
     fields->m_activeTouches[touch->getID()] = touch->getLocation();
 
     if (fields->m_activeTouches.size() == 2) {
@@ -151,9 +149,12 @@ bool MyEditorUI::ccTouchBegan(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
         CCPoint p1 = it->second; ++it;
         CCPoint p2 = it->second;
         fields->m_lastTouchVector = p2 - p1;
-        fields->m_twoFingerRotating = true;
+        fields->m_twoFingerRotating = false;
     }
 
+    if ((m_swipeEnabled || CCKeyboardDispatcher::get()->getShiftKeyPressed()) && m_selectedMode == 3) {
+        return EditorUI::ccTouchBegan(touch, p1);
+    }
     translate(touch);
     auto oldToolbarHeight = m_toolbarHeight;
     m_toolbarHeight = INT_MIN;
@@ -171,7 +172,7 @@ void MyEditorUI::ccTouchMoved(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
 
     fields->m_activeTouches[touch->getID()] = touch->getLocation();
 
-    if (fields->m_twoFingerRotating && fields->m_activeTouches.size() == 2) {
+    if (fields->m_activeTouches.size() == 2) {
         auto it = fields->m_activeTouches.begin();
         CCPoint p1 = it->second; ++it;
         CCPoint p2 = it->second;
@@ -184,15 +185,22 @@ void MyEditorUI::ccTouchMoved(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
         if (deltaAngle > 180.f) deltaAngle -= 360.f;
         if (deltaAngle < -180.f) deltaAngle += 360.f;
 
-        updateCanvasRotation(deltaAngle);
-        fields->m_lastTouchVector = currentVec;
-    } else {
-        if ((m_swipeEnabled || CCKeyboardDispatcher::get()->getShiftKeyPressed()) && m_selectedMode == 3) {
-            return EditorUI::ccTouchMoved(touch, p1);
+        if (!fields->m_twoFingerRotating && fabsf(deltaAngle) > 3.f) {
+            fields->m_twoFingerRotating = true;
         }
-        translate(touch);
-        EditorUI::ccTouchMoved(touch, p1);
+
+        if (fields->m_twoFingerRotating) {
+            updateCanvasRotation(deltaAngle);
+            fields->m_lastTouchVector = currentVec;
+            return;
+        }
+    } 
+    
+    if ((m_swipeEnabled || CCKeyboardDispatcher::get()->getShiftKeyPressed()) && m_selectedMode == 3) {
+        return EditorUI::ccTouchMoved(touch, p1);
     }
+    translate(touch);
+    EditorUI::ccTouchMoved(touch, p1);
 }
 
 void MyEditorUI::ccTouchEnded(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
