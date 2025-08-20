@@ -35,6 +35,7 @@ bool MultiTouchLayer::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent) {
     m_touchCount++;
     if (!m_firstTouch) {
         m_firstTouch = pTouch;
+        m_touchCenter = pTouch->getLocation();
     }
     if (m_touchCount <= 1) {
         m_editorUI->ccTouchBegan(pTouch, pEvent);
@@ -64,6 +65,7 @@ void MultiTouchLayer::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent) {
     }
 
     if (pTouch == m_firstTouch) {
+        m_touchCenter = pTouch->getLocation();
         return;
     }
 
@@ -72,10 +74,9 @@ void MultiTouchLayer::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent) {
         if (fields->m_rotateDragging) {
 
             auto currentPos = pTouch->getLocation();
-            auto screenCenter = CCDirector::sharedDirector()->getWinSize() / 2;
 
-            auto v1 = fields->m_lastPos - screenCenter;
-            auto v2 = currentPos - screenCenter;
+            auto v1 = fields->m_lastPos - m_touchCenter;
+            auto v2 = currentPos - m_touchCenter;
 
             float angle1 = atan2f(v1.y, v1.x);
             float angle2 = atan2f(v2.y, v2.x);
