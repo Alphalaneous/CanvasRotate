@@ -149,7 +149,6 @@ bool MyEditorUI::ccTouchBegan(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
         CCPoint p1 = it->second; ++it;
         CCPoint p2 = it->second;
         fields->m_lastTouchVector = p2 - p1;
-        fields->m_twoFingerRotating = false;
     }
 
     if ((m_swipeEnabled || CCKeyboardDispatcher::get()->getShiftKeyPressed()) && m_selectedMode == 3) {
@@ -172,6 +171,8 @@ void MyEditorUI::ccTouchMoved(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
 
     fields->m_activeTouches[touch->getID()] = touch->getLocation();
 
+    log::info("count: {}", fields->m_activeTouches.size());
+
     if (fields->m_activeTouches.size() == 2) {
         auto it = fields->m_activeTouches.begin();
         CCPoint p1 = it->second; ++it;
@@ -185,17 +186,11 @@ void MyEditorUI::ccTouchMoved(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
         if (deltaAngle > 180.f) deltaAngle -= 360.f;
         if (deltaAngle < -180.f) deltaAngle += 360.f;
 
-        if (!fields->m_twoFingerRotating && fabsf(deltaAngle) > 3.f) {
-            fields->m_twoFingerRotating = true;
-        }
-
-        if (fields->m_twoFingerRotating) {
-            updateCanvasRotation(deltaAngle);
-            fields->m_lastTouchVector = currentVec;
-            return;
-        }
+        updateCanvasRotation(deltaAngle);
+        fields->m_lastTouchVector = currentVec;
+        return;
     } 
-    
+
     if ((m_swipeEnabled || CCKeyboardDispatcher::get()->getShiftKeyPressed()) && m_selectedMode == 3) {
         return EditorUI::ccTouchMoved(touch, p1);
     }
@@ -206,7 +201,6 @@ void MyEditorUI::ccTouchMoved(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
 void MyEditorUI::ccTouchEnded(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
     auto fields = m_fields.self();
     fields->m_activeTouches.erase(touch->getID());
-    if (fields->m_activeTouches.size() < 2) fields->m_twoFingerRotating = false;
 
     translate(touch);
     EditorUI::ccTouchEnded(touch, p1);
@@ -215,7 +209,6 @@ void MyEditorUI::ccTouchEnded(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
 void MyEditorUI::ccTouchCancelled(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
     auto fields = m_fields.self();
     fields->m_activeTouches.erase(touch->getID());
-    if (fields->m_activeTouches.size() < 2) fields->m_twoFingerRotating = false;
 
     translate(touch);
     EditorUI::ccTouchCancelled(touch, p1);
