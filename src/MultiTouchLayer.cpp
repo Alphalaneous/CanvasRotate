@@ -31,12 +31,12 @@ bool MultiTouchLayer::init(EditorUI* editorUI) {
 }
 
 bool MultiTouchLayer::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent) {
-    log::info("began");
     m_touchCount++;
     if (!m_firstTouch) {
         m_firstTouch = pTouch;
     }
-    if (m_touchCount <= 1) {
+
+    if (m_touchCount <= 1 || m_editorUI->m_editorLayer->m_playbackMode == PlaybackMode::Playing) {
         m_editorUI->ccTouchBegan(pTouch, pEvent);
         return true;
     }
@@ -57,9 +57,7 @@ bool MultiTouchLayer::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent) {
 }
 
 void MultiTouchLayer::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent) {
-    log::info("moved");
-
-    if (m_touchCount <= 1 || m_touchCount > 2) {
+    if (m_touchCount <= 1 || m_touchCount > 2 || m_editorUI->m_editorLayer->m_playbackMode == PlaybackMode::Playing) {
         m_editorUI->ccTouchMoved(pTouch, pEvent);
         return;
     }
@@ -95,13 +93,12 @@ void MultiTouchLayer::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent) {
 
 void MultiTouchLayer::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent) {
     m_touchCount--;
-    log::info("ended");
 
     if (pTouch == m_firstTouch) {
         m_firstTouch = nullptr;
     }
 
-    if (m_touchCount < 1) {
+    if (m_touchCount < 1 || m_editorUI->m_editorLayer->m_playbackMode == PlaybackMode::Playing) {
         m_editorUI->ccTouchEnded(pTouch, pEvent);
         return;
     }
@@ -109,13 +106,12 @@ void MultiTouchLayer::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent) {
 
 void MultiTouchLayer::ccTouchCancelled(CCTouch *pTouch, CCEvent *pEvent) {
     m_touchCount--;
-    log::info("cancelled");
 
     if (pTouch == m_firstTouch) {
         m_firstTouch = nullptr;
     }
 
-    if (m_touchCount < 1) {
+    if (m_touchCount < 1 || m_editorUI->m_editorLayer->m_playbackMode == PlaybackMode::Playing) {
         m_editorUI->ccTouchCancelled(pTouch, pEvent);
         return;
     }

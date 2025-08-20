@@ -85,8 +85,15 @@ void MyEditorUI::playtestStopped() {
 }
 
 void MyEditorUI::updateCanvasRotation(float deltaAngle) {
+
+    if (m_editorLayer->m_playbackMode == PlaybackMode::Playing) return;
+
     const float snapIncrement = 45.0f;
+    #ifdef GEODE_IS_DESKTOP
     const float snapThreshold = 2.0f;
+    #else
+    const float snapThreshold = 4.0f;
+    #endif
     const float unsnapThreshold = 5.0f;
     const float smoothingFactor = 0.2f;
     auto fields = m_fields.self();
