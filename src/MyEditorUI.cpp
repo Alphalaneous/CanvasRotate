@@ -155,7 +155,16 @@ bool MyEditorUI::ccTouchBegan(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
     }
 
     if (fields->m_touchCount <= 1) {
-        return EditorUI::ccTouchBegan(touch, p1);
+        translate(touch);
+        auto oldToolbarHeight = m_toolbarHeight;
+        m_toolbarHeight = INT_MIN;
+        if (preTransform.y <= oldToolbarHeight) {
+            m_toolbarHeight = oldToolbarHeight;
+            return true;
+        }
+        auto ret = EditorUI::ccTouchBegan(touch, p1);
+        m_toolbarHeight = oldToolbarHeight;
+        return ret;
     }
     else {
         m_isDraggingCamera = false;
@@ -168,16 +177,7 @@ bool MyEditorUI::ccTouchBegan(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
         return true;
     }
 
-    translate(touch);
-    auto oldToolbarHeight = m_toolbarHeight;
-    m_toolbarHeight = INT_MIN;
-    if (preTransform.y <= oldToolbarHeight) {
-        m_toolbarHeight = oldToolbarHeight;
-        return true;
-    }
-    auto ret = EditorUI::ccTouchBegan(touch, p1);
-    m_toolbarHeight = oldToolbarHeight;
-    return ret;
+    return true;
 }
 
 void MyEditorUI::ccTouchMoved(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
@@ -195,10 +195,10 @@ void MyEditorUI::ccTouchMoved(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
         return;
     }
 
-    if (fields->m_rotateDragging) {
+    if (fields->m_rotateDragging && touch && fields->m_firstTouch) {
         auto currentPos = touch->getLocation();
 
-        CCPoint center = (fields->m_firstTouch->getLocation() - -currentPos) / 2;
+        CCPoint center = (fields->m_firstTouch->getLocation() + currentPos) / 2;
 
         auto v1 = fields->m_lastPos - center;
         auto v2 = currentPos - center;
