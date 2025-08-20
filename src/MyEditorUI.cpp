@@ -224,6 +224,8 @@ void MyEditorUI::ccTouchEnded(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
     if (touch == fields->m_firstTouch) {
         fields->m_firstTouch = nullptr;
     }
+    
+    if (fields->m_rotateDragging) return;
 
     translate(touch);
     EditorUI::ccTouchEnded(touch, p1);
