@@ -24,8 +24,9 @@ class $modify(MyEditorUI, EditorUI) {
 		bool m_editorLoaded = false;
 		float m_unsnappedCameraAngle = 0.0f;
 		float m_smoothedCameraAngle = 0.0f;
-		int m_touchCount;
-		CCTouch* m_firstTouch;
+		std::unordered_map<int, CCPoint> m_activeTouches;
+		CCPoint m_lastTouchVector;
+		bool m_twoFingerRotating;
 	};
 
     bool init(LevelEditorLayer* editorLayer);
