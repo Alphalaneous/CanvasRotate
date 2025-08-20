@@ -73,7 +73,7 @@ void MultiTouchLayer::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent) {
 
             auto currentPos = pTouch->getLocation();
 
-            CCPoint center = (m_firstTouch->getLocation() - -pTouch->getLocation()) / 2;
+            CCPoint center = (m_firstTouch->getLocation() - -currentPos) / 2;
 
             auto v1 = fields->m_lastPos - center;
             auto v2 = currentPos - center;
