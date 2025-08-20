@@ -40,7 +40,7 @@ bool MultiTouchLayer::ccTouchBegan(CCTouch* touch, CCEvent* event) {
     if (!m_firstTouch) {
         m_firstTouch = touch;
         isFirst = true;
-    } 
+    }
     else if (!m_secondTouch) {
         m_secondTouch = touch;
     }
@@ -63,7 +63,7 @@ bool MultiTouchLayer::ccTouchBegan(CCTouch* touch, CCEvent* event) {
 }
 
 void MultiTouchLayer::ccTouchMoved(CCTouch* touch, CCEvent* event) {
-    if (!m_secondTouch || m_editorUI->m_editorLayer->m_playbackMode == PlaybackMode::Playing || isSwiping()) {
+    if ((!m_secondTouch && m_firstTouch) || m_editorUI->m_editorLayer->m_playbackMode == PlaybackMode::Playing || isSwiping()) {
         m_editorUI->ccTouchMoved(touch, event);
         return;
     }
