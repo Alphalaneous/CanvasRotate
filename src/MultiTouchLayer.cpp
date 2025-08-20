@@ -66,6 +66,7 @@ void MultiTouchLayer::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent) {
     }
 
     if (pTouch == m_firstTouch) {
+        m_firstTouch->setTouchInfo(m_firstTouch->getID(), m_firstTouch->getStartLocation().x, m_firstTouch->getStartLocation().y);
         return;
     }
 
