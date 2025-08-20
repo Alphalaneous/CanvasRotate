@@ -8,6 +8,7 @@ protected:
     EditorUI* m_editorUI;
     int m_touchCount;
     Ref<CCTouch> m_firstTouch;
+    Ref<CCTouch> m_secondTouch;
 public:
     static MultiTouchLayer* create(EditorUI* editorUI);
     bool init(EditorUI* editorUI);

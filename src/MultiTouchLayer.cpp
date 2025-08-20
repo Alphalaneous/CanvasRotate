@@ -34,73 +34,79 @@ bool MultiTouchLayer::isSwiping() {
     return (m_editorUI->m_swipeEnabled || CCKeyboardDispatcher::get()->getShiftKeyPressed());
 }
 
-bool MultiTouchLayer::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent) {
-    m_touchCount++;
+bool MultiTouchLayer::ccTouchBegan(CCTouch* touch, CCEvent* event) {
     if (!m_firstTouch) {
-        m_firstTouch = pTouch;
-    }
-
-    if (m_touchCount <= 1 || m_editorUI->m_editorLayer->m_playbackMode == PlaybackMode::Playing || isSwiping()) {
+        m_firstTouch = touch;
+        m_editorUI->ccTouchBegan(touch, event);
         return true;
     }
-    else {
+    if (!m_secondTouch) {
+        m_secondTouch = touch;
         m_editorUI->m_isDraggingCamera = false;
         m_editorUI->stopActionByTag(123);
-    }
-
-    if (MyEditorUI* editorUI = static_cast<MyEditorUI*>(EditorUI::get())) {
-        if (m_firstTouch != pTouch) {
+        if (auto* editorUI = static_cast<MyEditorUI*>(EditorUI::get()); m_firstTouch != touch) {
             auto fields = editorUI->m_fields.self();
             fields->m_rotateDragging = true;
-            fields->m_lastPos = pTouch->getLocation();
         }
+        return true;
     }
 
     return false;
 }
 
-void MultiTouchLayer::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent) {
-    if (pTouch == m_firstTouch || m_touchCount <= 1 || m_touchCount > 2 || m_editorUI->m_editorLayer->m_playbackMode == PlaybackMode::Playing || isSwiping()) {
+void MultiTouchLayer::ccTouchMoved(CCTouch* touch, CCEvent* event) {
+    if (!m_secondTouch || m_editorUI->m_editorLayer->m_playbackMode == PlaybackMode::Playing || isSwiping()) {
+        m_editorUI->ccTouchMoved(touch, event);
         return;
     }
 
-    if (MyEditorUI* editorUI = static_cast<MyEditorUI*>(EditorUI::get())) {
+    if (touch != m_secondTouch) return;
+
+    if (auto editorUI = static_cast<MyEditorUI*>(EditorUI::get())) {
         auto fields = editorUI->m_fields.self();
-        if (fields->m_rotateDragging) {
+        if (!fields->m_rotateDragging) return;
 
-            auto currentPos = pTouch->getLocation();
+        const CCPoint currentPos = touch->getLocation();
+        const CCPoint center = (m_firstTouch->getLocation() + currentPos) / 2;
 
-            CCPoint center = (m_firstTouch->getLocation() - -currentPos) / 2;
+        auto angle = [](const CCPoint& p) {
+            return atan2f(p.y, p.x);
+        };
 
-            auto v1 = fields->m_lastPos - center;
-            auto v2 = currentPos - center;
+        const auto v1 = m_firstTouch->getLocation() - center;
+        const auto v2 = currentPos - center;
 
-            float angle1 = atan2f(v1.y, v1.x);
-            float angle2 = atan2f(v2.y, v2.x);
-            float deltaAngle = CC_RADIANS_TO_DEGREES(angle2 - angle1);
+        float deltaAngle = CC_RADIANS_TO_DEGREES(angle(v2) - angle(v1));
+        if (deltaAngle > 180.f) deltaAngle -= 360.f;
+        if (deltaAngle < -180.f) deltaAngle += 360.f;
 
-            if (deltaAngle > 180.f) deltaAngle -= 360.f;
-            if (deltaAngle < -180.f) deltaAngle += 360.f;
-
-            editorUI->updateCanvasRotation(deltaAngle);
-
-            fields->m_lastPos = currentPos;
-        }
+        editorUI->updateCanvasRotation(deltaAngle);
+        fields->m_lastPos = currentPos;
     }
 }
 
-void MultiTouchLayer::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent) {
-    m_touchCount--;
-
-    if (pTouch == m_firstTouch) {
+void MultiTouchLayer::ccTouchEnded(CCTouch* touch, CCEvent* event) {
+    if (touch == m_firstTouch) {
         m_firstTouch = nullptr;
+    } 
+    else if (touch == m_secondTouch) {
+        m_secondTouch = nullptr;
+    }
+
+    if (!m_secondTouch) {
+        m_editorUI->ccTouchEnded(touch, event);
     }
 }
 
-void MultiTouchLayer::ccTouchCancelled(CCTouch *pTouch, CCEvent *pEvent) {
-    m_touchCount--;
-
-    if (pTouch == m_firstTouch) {
+void MultiTouchLayer::ccTouchCancelled(CCTouch* touch, CCEvent* event) {
+    if (touch == m_firstTouch) {
         m_firstTouch = nullptr;
+    } 
+    else if (touch == m_secondTouch) {
+        m_secondTouch = nullptr;
+    }
+
+    if (!m_secondTouch) {
+        m_editorUI->ccTouchCancelled(touch, event);
     }
 }
