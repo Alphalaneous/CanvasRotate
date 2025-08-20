@@ -41,6 +41,7 @@ bool MultiTouchLayer::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent) {
         return true;
     }
     else {
+        m_editorUI->ccTouchEnded(m_firstTouch, pEvent);
         m_editorUI->m_isDraggingCamera = true;
         m_editorUI->m_continueSwipe = false;
     }
