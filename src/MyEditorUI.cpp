@@ -142,9 +142,7 @@ bool MyEditorUI::ccTouchBegan(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
     auto fields = m_fields.self();
     CCPoint preTransform = touch->getLocation();
 
-    if (fields->m_activeTouches.find(touch->getID()) != fields->m_activeTouches.end()) {
-        fields->m_activeTouches[touch->getID()] = touch->getLocation();
-    }
+    fields->m_activeTouches[touch->getID()] = touch->getLocation();
 
     if (fields->m_activeTouches.size() == 2) {
         auto it = fields->m_activeTouches.begin();
@@ -170,9 +168,10 @@ bool MyEditorUI::ccTouchBegan(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
 
 void MyEditorUI::ccTouchMoved(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
     auto fields = m_fields.self();
-
-    fields->m_activeTouches[touch->getID()] = touch->getLocation();
-
+    
+    if (fields->m_activeTouches.find(touch->getID()) != fields->m_activeTouches.end()) {
+        fields->m_activeTouches[touch->getID()] = touch->getLocation();
+    }
     log::info("count: {}", fields->m_activeTouches.size());
 
     if (fields->m_activeTouches.size() == 2) {
