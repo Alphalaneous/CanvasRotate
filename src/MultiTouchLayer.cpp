@@ -1,0 +1,111 @@
+#include "MultiTouchLayer.hpp"
+#include "MyEditorUI.hpp"
+
+MultiTouchLayer* MultiTouchLayer::create(EditorUI* editorUI) {
+    auto ret = new MultiTouchLayer();
+    if (ret->init(editorUI)) {
+        ret->autorelease();
+        return ret;
+    }
+    delete ret;
+    return nullptr;
+}
+
+bool MultiTouchLayer::init(EditorUI* editorUI) {
+    if (!CCLayer::init()) return false;
+    m_editorUI = editorUI;
+
+    auto winSize = CCDirector::get()->getWinSize();
+
+    setAnchorPoint({0.5f, 0.5f});
+    ignoreAnchorPointForPosition(false);
+    setContentSize(winSize);
+    setPosition(winSize/2);
+
+    setTouchMode(ccTouchesMode::kCCTouchesAllAtOnce);
+    setTouchEnabled(true);
+
+    cocos2d::CCTouchDispatcher::get()->addTargetedDelegate(this, cocos2d::kCCMenuHandlerPriority, true);
+
+    return true;
+}
+
+bool MultiTouchLayer::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent) {
+    log::info("began");
+    m_touchCount++;
+    if (!m_firstTouch) {
+        m_firstTouch = pTouch;
+    }
+    if (m_touchCount <= 1) {
+        m_editorUI->ccTouchBegan(pTouch, pEvent);
+        return true;
+    }
+
+    if (MyEditorUI* editorUI = static_cast<MyEditorUI*>(EditorUI::get())) {
+        auto fields = editorUI->m_fields.self();
+        fields->m_rotateDragging = true;
+        fields->m_lastPos = pTouch->getLocation();
+    }
+
+    return true;
+}
+
+void MultiTouchLayer::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent) {
+    log::info("moved");
+    if (m_touchCount <= 1 || m_touchCount > 2 || pTouch == m_firstTouch) {
+        m_editorUI->ccTouchMoved(pTouch, pEvent);
+        return;
+    }
+
+    if (MyEditorUI* editorUI = static_cast<MyEditorUI*>(EditorUI::get())) {
+        auto fields = editorUI->m_fields.self();
+        if (fields->m_rotateDragging) {
+
+            auto currentPos = pTouch->getLocation();
+            auto screenCenter = CCDirector::sharedDirector()->getWinSize() / 2;
+
+            auto v1 = fields->m_lastPos - screenCenter;
+            auto v2 = currentPos - screenCenter;
+
+            float angle1 = atan2f(v1.y, v1.x);
+            float angle2 = atan2f(v2.y, v2.x);
+            float deltaAngle = CC_RADIANS_TO_DEGREES(angle2 - angle1);
+
+            if (deltaAngle > 180.f) deltaAngle -= 360.f;
+            if (deltaAngle < -180.f) deltaAngle += 360.f;
+
+            editorUI->updateCanvasRotation(deltaAngle);
+
+            fields->m_lastPos = currentPos;
+        }
+    }
+}
+
+void MultiTouchLayer::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent) {
+    m_touchCount--;
+    log::info("ended");
+
+    if (pTouch == m_firstTouch) {
+        m_firstTouch = nullptr;
+    }
+
+    if (m_touchCount < 1) {
+        m_editorUI->ccTouchEnded(pTouch, pEvent);
+        return;
+    }
+}
+
+void MultiTouchLayer::ccTouchCancelled(CCTouch *pTouch, CCEvent *pEvent) {
+    m_touchCount--;
+    log::info("cancelled");
+
+    if (pTouch == m_firstTouch) {
+        m_firstTouch = nullptr;
+    }
+
+    if (m_touchCount < 1) {
+        m_editorUI->ccTouchCancelled(pTouch, pEvent);
+        return;
+    }
+
+}

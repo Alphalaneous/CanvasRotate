@@ -1,0 +1,17 @@
+{
+	"geode": "4.7.0",
+	"gd": {
+		"win": "2.2074",
+		"android": "2.2074",
+		"mac": "2.2074",
+		"ios": "2.2074"
+	},
+	"id": "alphalaneous.canvas_rotate",
+	"name": "Canvas Rotate",
+	"version": "v1.0.0",
+	"developer": "Alphalaneous",
+	"description": "Rotate the editor like an art program",
+	"dependencies": {
+		"alphalaneous.good_grid": "v1.0.0"
+	}
+}
