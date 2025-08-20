@@ -220,9 +220,9 @@ void MyEditorUI::ccTouchEnded(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
     auto fields = m_fields.self();
 
     fields->m_touchCount--;
-
     if (touch == fields->m_firstTouch) {
         fields->m_firstTouch = nullptr;
+        fields->m_rotateDragging = false;
         return;
     }
 
@@ -234,9 +234,9 @@ void MyEditorUI::ccTouchCancelled(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1)
     auto fields = m_fields.self();
 
     fields->m_touchCount--;
-
     if (touch == fields->m_firstTouch) {
         fields->m_firstTouch = nullptr;
+        fields->m_rotateDragging = false;
         return;
     }
 

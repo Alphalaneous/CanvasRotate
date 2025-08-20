@@ -25,7 +25,7 @@ class $modify(MyEditorUI, EditorUI) {
 		float m_unsnappedCameraAngle = 0.0f;
 		float m_smoothedCameraAngle = 0.0f;
 		int m_touchCount;
-		Ref<CCTouch> m_firstTouch;
+		CCTouch* m_firstTouch;
 	};
 
     bool init(LevelEditorLayer* editorLayer);
