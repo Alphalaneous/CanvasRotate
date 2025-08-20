@@ -187,8 +187,8 @@ void MyEditorUI::ccTouchMoved(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
     }
 
     if (fields->m_touchCount <= 1) {
-        EditorUI::ccTouchMoved(touch, p1);
-        return;
+        translate(touch);
+        return EditorUI::ccTouchMoved(touch, p1);
     }
 
     if (touch == fields->m_firstTouch || fields->m_touchCount > 2 || m_editorLayer->m_playbackMode == PlaybackMode::Playing || isSwiping()) {
@@ -214,9 +214,6 @@ void MyEditorUI::ccTouchMoved(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
 
         fields->m_lastPos = currentPos;
     }
-
-    translate(touch);
-    EditorUI::ccTouchMoved(touch, p1);
 }
 
 void MyEditorUI::ccTouchEnded(cocos2d::CCTouch* touch, cocos2d::CCEvent* p1) {
