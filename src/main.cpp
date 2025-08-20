@@ -50,6 +50,7 @@ class $modify(MyLevelEditorLayer, LevelEditorLayer) {
 		return true;
 	}
 
+	#ifndef GEODE_IS_IOS
     cocos2d::CCArray* objectsInRect(cocos2d::CCRect rect, bool useGroupValidity) {
 		auto result = cocos2d::CCArray::create();
 
@@ -95,6 +96,7 @@ class $modify(MyLevelEditorLayer, LevelEditorLayer) {
 
 		return OBB2D::create(rotatedCenter, width, height, angle + degrees);
 	}
+	#endif
 };
 
 #ifdef GEODE_IS_WINDOWS
