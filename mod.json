@@ -8,7 +8,7 @@
 	},
 	"id": "alphalaneous.canvas_rotate",
 	"name": "Canvas Rotate",
-	"version": "v1.0.0",
+	"version": "v1.0.1",
 	"developer": "Alphalaneous",
 	"description": "Rotate the editor!",
 	"dependencies": {
