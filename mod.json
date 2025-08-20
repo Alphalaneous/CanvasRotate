@@ -10,8 +10,16 @@
 	"name": "Canvas Rotate",
 	"version": "v1.0.0",
 	"developer": "Alphalaneous",
-	"description": "Rotate the editor like an art program",
+	"description": "Rotate the editor!",
 	"dependencies": {
 		"alphalaneous.good_grid": "v1.0.0"
-	}
+	},
+	"links": {
+		"homepage": "https://linktr.ee/Alphalaneous",
+		"source": "https://github.com/Alphalaneous/CanvasRotate",
+		"community": "https://discord.gg/Txn2CA5dHF"
+	},
+	"tags": [
+		"editor", "interface", "enhancement", "offline"
+	]
 }

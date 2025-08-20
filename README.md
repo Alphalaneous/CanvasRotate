@@ -1,23 +1,7 @@
-# CanvasRotate
-This is where she makes a mod.
+# Canvas Rotate
 
-<img src="logo.png" width="150" alt="the mod's logo" />
+Allows you to rotate the editor view! This will also place objects relative to the rotation you are in. Snaps at increments of 45 degrees. It is a smooth snap, so slow down your rotating for the snap to ease into place.
 
-*Update logo.png to change your mod's icon (please)*
+For <cb>desktop</c> users, right click and drag to rotate the editor.
 
-## Getting started
-We recommend heading over to [the getting started section on our docs](https://docs.geode-sdk.org/getting-started/) for useful info on what to do next.
-
-## Build instructions
-For more info, see [our docs](https://docs.geode-sdk.org/getting-started/create-mod#build)
-```sh
-# Assuming you have the Geode CLI set up already
-geode build
-```
-
-# Resources
-* [Geode SDK Documentation](https://docs.geode-sdk.org/)
-* [Geode SDK Source Code](https://github.com/geode-sdk/geode/)
-* [Geode CLI](https://github.com/geode-sdk/cli)
-* [Bindings](https://github.com/geode-sdk/bindings/)
-* [Dev Tools](https://github.com/geode-sdk/DevTools)
+For <cb>mobile</c> users, use two fingers and rotate them to rotate the editor.
