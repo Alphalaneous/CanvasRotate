@@ -4,17 +4,9 @@
 #include <Geode/modify/LevelEditorLayer.hpp>
 #include <alphalaneous.good_grid/include/DrawGridAPI.hpp>
 #include <alphalaneous.good_grid/include/DrawLayers.hpp>
-#include "MultiTouchLayer.hpp"
 #include "MyEditorUI.hpp"
 
 using namespace geode::prelude;
-
-	/*
-		todo:
-		2 finger rotate for mobile
-		hold space to align object to view rotation
-		rotate arrow keys depending on canvas rotation
-	*/
 
 static void forEachObject(GJBaseGameLayer const* game, std::function<void(GameObject*)> const& callback) {
 	int count = game->m_sections.empty() ? -1 : game->m_sections.size();
@@ -39,16 +31,6 @@ static void forEachObject(GJBaseGameLayer const* game, std::function<void(GameOb
 }
 
 class $modify(MyLevelEditorLayer, LevelEditorLayer) {
-
-    bool init(GJGameLevel* p0, bool p1) {
-		if (!LevelEditorLayer::init(p0, p1)) return false;
-
-		auto touchLayer = MultiTouchLayer::create(m_editorUI);
-		touchLayer->setZOrder(500);
-		addChild(touchLayer);
-
-		return true;
-	}
 
     cocos2d::CCArray* objectsInRect(cocos2d::CCRect rect, bool useGroupValidity) {
 		auto result = cocos2d::CCArray::create();

@@ -24,6 +24,8 @@ class $modify(MyEditorUI, EditorUI) {
 		bool m_editorLoaded = false;
 		float m_unsnappedCameraAngle = 0.0f;
 		float m_smoothedCameraAngle = 0.0f;
+		int m_touchCount;
+		Ref<CCTouch> m_firstTouch;
 	};
 
     bool init(LevelEditorLayer* editorLayer);
@@ -39,5 +41,6 @@ class $modify(MyEditorUI, EditorUI) {
     void ccTouchCancelled(cocos2d::CCTouch* p0, cocos2d::CCEvent* p1);
 	void scrollWheel(float y, float x);
 	void translate(cocos2d::CCTouch* touch);
+	bool isSwiping();
 	CCPoint rotatePointAroundPivot(CCPoint point, CCPoint pivot, float angleDegrees);
 };
