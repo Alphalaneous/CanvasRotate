@@ -48,6 +48,7 @@ bool MultiTouchLayer::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent) {
         if (m_firstTouch != pTouch) {
             auto fields = editorUI->m_fields.self();
             fields->m_rotateDragging = true;
+            editorUI->m_isDraggingCamera = true;
             fields->m_lastPos = pTouch->getLocation();
         }
     }
@@ -102,6 +103,7 @@ void MultiTouchLayer::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent) {
 
     if (m_touchCount < 1) {
         m_editorUI->ccTouchEnded(pTouch, pEvent);
+        m_editorUI->m_isDraggingCamera = false;
         return;
     }
 }
@@ -116,6 +118,7 @@ void MultiTouchLayer::ccTouchCancelled(CCTouch *pTouch, CCEvent *pEvent) {
 
     if (m_touchCount < 1) {
         m_editorUI->ccTouchCancelled(pTouch, pEvent);
+        m_editorUI->m_isDraggingCamera = false;
         return;
     }
 
