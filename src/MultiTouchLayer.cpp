@@ -41,8 +41,7 @@ bool MultiTouchLayer::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent) {
     }
 
     if (m_touchCount <= 1 || m_editorUI->m_editorLayer->m_playbackMode == PlaybackMode::Playing || isSwiping()) {
-        m_editorUI->ccTouchBegan(pTouch, pEvent);
-        return true;
+        return false;
     }
     else {
         m_editorUI->m_isDraggingCamera = false;
@@ -61,12 +60,7 @@ bool MultiTouchLayer::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent) {
 }
 
 void MultiTouchLayer::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent) {
-    if (m_touchCount <= 1 || m_editorUI->m_editorLayer->m_playbackMode == PlaybackMode::Playing || isSwiping()) {
-        m_editorUI->ccTouchMoved(pTouch, pEvent);
-        return;
-    }
-
-    if (pTouch == m_firstTouch || m_touchCount > 2) {
+    if (pTouch == m_firstTouch || m_touchCount <= 1 || m_touchCount > 2 || m_editorUI->m_editorLayer->m_playbackMode == PlaybackMode::Playing || isSwiping()) {
         return;
     }
 
@@ -101,11 +95,6 @@ void MultiTouchLayer::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent) {
     if (pTouch == m_firstTouch) {
         m_firstTouch = nullptr;
     }
-
-    if (m_touchCount < 1 || m_editorUI->m_editorLayer->m_playbackMode == PlaybackMode::Playing || isSwiping()) {
-        m_editorUI->ccTouchEnded(pTouch, pEvent);
-        return;
-    }
 }
 
 void MultiTouchLayer::ccTouchCancelled(CCTouch *pTouch, CCEvent *pEvent) {
@@ -114,10 +103,4 @@ void MultiTouchLayer::ccTouchCancelled(CCTouch *pTouch, CCEvent *pEvent) {
     if (pTouch == m_firstTouch) {
         m_firstTouch = nullptr;
     }
-
-    if (m_touchCount < 1 || m_editorUI->m_editorLayer->m_playbackMode == PlaybackMode::Playing || isSwiping()) {
-        m_editorUI->ccTouchCancelled(pTouch, pEvent);
-        return;
-    }
-
 }
