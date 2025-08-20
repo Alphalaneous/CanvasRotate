@@ -40,6 +40,9 @@ bool MultiTouchLayer::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent) {
         m_editorUI->ccTouchBegan(pTouch, pEvent);
         return true;
     }
+    else {
+        m_editorUI->ccTouchEnded(m_firstTouch, pEvent);
+    }
 
     if (MyEditorUI* editorUI = static_cast<MyEditorUI*>(EditorUI::get())) {
         auto fields = editorUI->m_fields.self();
