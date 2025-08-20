@@ -7,7 +7,6 @@ class MultiTouchLayer : public CCLayer {
 protected:
     EditorUI* m_editorUI;
     int m_touchCount;
-    CCPoint m_touchCenter;
     Ref<CCTouch> m_firstTouch;
 public:
     static MultiTouchLayer* create(EditorUI* editorUI);
