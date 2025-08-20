@@ -52,8 +52,13 @@ bool MultiTouchLayer::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent) {
 
 void MultiTouchLayer::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent) {
     log::info("moved");
-    if (m_touchCount <= 1 || m_touchCount > 2 || pTouch == m_firstTouch) {
+
+    if (m_touchCount <= 1 || m_touchCount > 2) {
         m_editorUI->ccTouchMoved(pTouch, pEvent);
+        return;
+    }
+
+    if (pTouch == m_firstTouch) {
         return;
     }
 
