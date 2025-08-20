@@ -31,7 +31,7 @@ bool MultiTouchLayer::init(EditorUI* editorUI) {
 }
 
 bool MultiTouchLayer::isSwiping() {
-    return (m_editorUI->m_swipeEnabled || CCKeyboardDispatcher::get()->getShiftKeyPressed()) && m_editorUI->m_selectedMode == 3;
+    return (m_editorUI->m_swipeEnabled || CCKeyboardDispatcher::get()->getShiftKeyPressed());
 }
 
 bool MultiTouchLayer::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent) {
@@ -61,12 +61,12 @@ bool MultiTouchLayer::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent) {
 }
 
 void MultiTouchLayer::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent) {
-    if (m_touchCount <= 1 || m_touchCount > 2 || m_editorUI->m_editorLayer->m_playbackMode == PlaybackMode::Playing || isSwiping()) {
+    if (m_touchCount <= 1 || m_editorUI->m_editorLayer->m_playbackMode == PlaybackMode::Playing || isSwiping()) {
         m_editorUI->ccTouchMoved(pTouch, pEvent);
         return;
     }
 
-    if (pTouch == m_firstTouch) {
+    if (pTouch == m_firstTouch || m_touchCount > 2) {
         return;
     }
 
